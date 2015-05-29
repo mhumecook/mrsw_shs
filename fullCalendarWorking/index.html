@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="utf-8">
+	<link href='fullcalendar-2.3.1/fullcalendar.css' rel='stylesheet'>
+	<link href='css/mhcCalendar.css' rel='stylesheet'>
+	<script src='fullcalendar-2.3.1/lib/jquery.min.js'></script>
+	<!--<script src='fullcalendar-2.3.1/lib/jquery-ui.custom.min.js'></script> -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+	<script src='fullcalendar-2.3.1/lib/moment.min.js'></script>
+	<script src='fullcalendar-2.3.1/fullcalendar.js'></script>
+	<script src='js/calendar.js'></script>
+        <script src="js/googleAuth.js"></script>
+        <script type='text/javascript' src='fullcalendar-2.3.1/gcal.js'></script>
+</head>
+
+<body>
+    <div id="authorize-div" style="display: none">
+            <span>Authorize access to calendar</span>
+            <!--Button for the user to click to initiate auth sequence -->
+            <button id="authorize-button" onclick="handleAuthClick(event)">
+                Authorize
+            </button>
+        </div>
+	<div id='wrap'>
+	
+		<div id='calendar'></div>
+		<div id='external-events'>
+			<h4>Customers</h4>
+			<div class='fc-event' data-customer-name="Amy" data-event-title="Amy House Clean" data-address="1 Middle Street, Fitzroy">Amy</div>
+			<div class='fc-event' data-name="Belinda" data-event-title="Belinda House Clean" data-address="1 High Street, Fitzroy">Belinda</div>
+			<div class='fc-event' data-name="Cassandra" data-event-title="Cassandra House Clean" data-address="2 High Street, Fitzroy">Cassandra</div>
+			<div class='fc-event' data-name="Danielle 1" data-event-title="Danielle 1 House Clean" data-address="3 High Street, Fitzroy">Danielle 1</div>
+			<div class='fc-event' data-name="Danielle 2" data-event-title="Danielle 2 House Clean" data-address="4 High Street, Fitzroy">Danielle 2</div>
+			<div class='fc-event' data-name="Effie" data-event-title="Effie House Clean" data-address="5 High Street, Fitzroy">Effie</div>
+			<div class='fc-event' data-name="Fifi" data-eventstuff="Fifi House Clean" data-address="6 High Street, Fitzroy">Fifi</div>
+			<div class='fc-event' data-name="Georgia" data-event-title="Georgia House Clean" data-address="7 High Street, Fitzroy">Georgia</div>
+			<div class='fc-event' data-name="Herrera" data-event-title="Herrera House Clean" data-address="8 High Street, Fitzroy">Herrera</div>
+			<div class='fc-event' data-name="Imke" data-event-title="Imke House Clean" data-address="9 High Street, Fitzroy">Imke</div>
+			<div class='fc-event' data-name="Jeanette" data-event-title="Jeanette House Clean" data-address="10 High Street, Fitzroy">Jeanette</div>
+			<div class='fc-event' data-name="Katherine" data-event-title="Katherine House Clean" data-address="11 High Street, Fitzroy">Katherine</div>
+			<div class='fc-event' data-name="Lisa" data-data-event-title="Lisa House Clean" data-address="12 High Street, Fitzroy">Lisa</div>
+			<div class='fc-event' data-name="Michelle" data-event-title="Michelle House Clean" data-address="13 High Street, Fitzroy">Michelle</div>
+			<div class='fc-event' data-name="Nijina" data-event-title="Nijina House Clean" data-address="14 High Street, Fitzroy">Nijina</div>
+			<div class='fc-event' data-name="Ophelia" data-event-title="Ophelia House Clean" data-address="15 High Street, Fitzroy">Ophelia</div>
+			<div class='fc-event' data-name="Patricia" data-event-title="Patricia House Clean" data-address="16 High Street, Fitzroy">Patricia</div>
+			<div class='fc-event' data-name="Queenie" data-event-title="Queenie House Clean" data-address="17 High Street, Fitzroy">Queenie</div>
+			<div class='fc-event' data-name="Rebecca" data-event-title="Rebecca House Clean" data-address="18 High Street, Fitzroy">Rebecca</div>
+			<div class='fc-event' data-name="Sharon" data-event-title="Sharon House Clean" data-address="19 High Street, Fitzroy">Sharon</div>
+			<div class='fc-event' data-name="Tenielle" data-event-title="Tenielle House Clean" data-address="20 High Street, Fitzroy">Tenielle</div>
+			<div class='fc-event' data-name="Ursula" data-event-title="Ursula House Clean" data-address="21 High Street, Fitzroy">Ursula</div>
+			<div class='fc-event' data-name="Vanessa" data-event-title="Vanessa House Clean" data-address="22 High Street, Fitzroy">Vanessa</div>
+			<div class='fc-event' data-name="Wendy" data-event-title="Wendy House Clean" data-address="23 High Street, Fitzroy">Wendy</div>
+			<div class='fc-event' data-name="Xara" data-event-title="Xara House Clean" data-address="24 High Street, Fitzroy">Xara</div>
+			<div class='fc-event' data-name="Yesmen" data-event-title="Yesmen House Clean" data-address="25 High Street, Fitzroy">Yesmen</div>
+			<div class='fc-event' data-name="Zortha" data-event-title="Zortha House Clean" data-address="26 High Street, Fitzroy">Zortha</div>
+			<div class='fc-event' data-name="Anne Marie" data-event-title="Anne Marie House Cleaning" data-address="27 High Street, Fitzroy">Anne Marie</div>
+		</div>
+		<div id='staff-list'>
+			<h4>Staff</h4>
+			<div class='fc-staff'>Naa</div>
+			<div class='fc-staff'>Lanthom</div>
+			<div class='fc-staff'>Diaow</div>
+			<div class='fc-staff'>Winnie</div>
+			<div class='fc-staff'>Pam</div>
+			<div class='fc-staff'>Sandee</div>
+		</div>
+		</div>
+
+		<div style='clear:both'></div>
+
+	</div>
+
+</body>
+</html>
