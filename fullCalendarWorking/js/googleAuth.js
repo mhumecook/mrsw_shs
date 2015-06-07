@@ -5,7 +5,7 @@ $.getScript("https://apis.google.com/js/client.js?onload=checkAuth", function() 
 
 // // Client ID can be retrieved from the project in the Google
 // Developer Console, https://console.developers.google.com
-        var CLIENT_ID = '<CLIENT_ID>';
+        var CLIENT_ID = '437105128149-8lmn4moc6n3are7idvsqr6cob85482lv.apps.googleusercontent.com';
 
 // We will be updating the Calendar, so we need the following
 // auth scope

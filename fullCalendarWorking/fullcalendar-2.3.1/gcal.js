@@ -139,6 +139,7 @@ function transformOptions(sourceOptions, start, end, timezone, calendar) {
 				reportError('Google Calendar API: ' + data.error.message, data.error.errors);
 			}
 			else if (data.items) {
+                            //console.log(data.items);
 				$.each(data.items, function(i, entry) {
 					var url = entry.htmlLink;
 
@@ -146,7 +147,6 @@ function transformOptions(sourceOptions, start, end, timezone, calendar) {
 					if (timezoneArg) {
 						url = injectQsComponent(url, 'ctz=' + timezoneArg);
 					}
-
 					events.push({
 						id: entry.id,
 						title: entry.summary,
@@ -154,7 +154,9 @@ function transformOptions(sourceOptions, start, end, timezone, calendar) {
 						end: entry.end.dateTime || entry.end.date, // same
 						url: url,
 						location: entry.location,
-						description: entry.description
+						description: entry.description,
+                                                attendees: entry.attendees,
+                                                extendedProperties: entry.extendedProperties
 					});
 				});
 

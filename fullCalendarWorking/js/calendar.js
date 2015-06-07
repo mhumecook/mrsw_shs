@@ -35,7 +35,6 @@ $(document).ready(function () {
             $(this).droppable({
             accept: ".fc-staff",
             drop: function (event, ui) {
-                console.log(event);
                 alert('Dropped.  Bang!');
             }
         });
@@ -81,11 +80,12 @@ $(document).ready(function () {
             //color: 'yellow',
             //textColor: 'black'
         },
-        //eventClick: function (event) {
-            // opens events in a popup window
-            ///window.open(event.url, 'gcalevent', 'width=700,height=600');
-            //return false;
-        //},
+        eventClick: function (event) {
+             //opens events in a popup window
+            window.open(event.url, 'gcalevent', 'width=700,height=600');
+            return false;
+        },
+        
         minTime: "07:00",
         maxTime: "22:00",
         defaultTimedEventDuration: "01:00:00",
@@ -107,12 +107,19 @@ $(document).ready(function () {
         },
         eventReceive: function (event) {
             $('#calendar').fullCalendar('addEvent', event, true);
-//            console.log("Event received:");
-//            console.log('Location is: ' + event.appointmentAddress);
-//            console.log('Job name is: ' + event.jobName);
-//            console.log('Customer name is: ' + event.customerName);
             /* For the insert function*/
             var endTime = moment(event.start);
+            myExtendedProperties = {};
+            myExtendedProperties.private = {};
+            myExtendedProperties.private.staff = [];
+            myExtendedProperties.private.notes = [];
+            myExtendedProperties.private.extraTasks = [];
+            myExtendedProperties.private.confirmed = false;
+            myExtendedProperties.private.completed = false;
+            myExtendedProperties.private.paid = false;
+            myExtendedProperties.private.jobCost = 0.00;
+            
+            
             endTime.add(1, 'hours');
             var resource = {
                 "summary": event.jobName,
@@ -125,18 +132,14 @@ $(document).ready(function () {
                     "dateTime": endTime,
                     "timeZone": "Australia/Melbourne"
                 },
+                "extendedProperties": myExtendedProperties
             };
-//            console.log('Event is received: ');
-//            console.log(this);
 
             var request = gapi.client.calendar.events.insert({
                 'calendarId': 'primary',
                 'resource': resource
             });
             request.execute(function (resp) {
-//                console.log('Response to insert:');
-//                console.log(resp);
-//                console.log(resp.id);
             });
             /* End of insert function */
 
@@ -160,13 +163,8 @@ $(document).ready(function () {
                 'eventId': event.id,
                 'resource': resource
             });
-//            request.execute(function (resp) {
-//                console.log('Response to update:');
-//                console.log(resp);
-//                console.log(resp.id);
-//            });
-
-
+            request.execute(function (resp) {
+            });
         },
         eventDrop: function (event, delta, revertFunc) {
 
@@ -180,6 +178,18 @@ $(document).ready(function () {
                 "end": {
                     "dateTime": event.end,
                     "timeZone": "Australia/Melbourne"
+                },
+                "extendedProperties": {
+                    "private": {
+                        "staff": ["nobody", "somebody"],
+                        "confirmed": false,
+                        "completed": false,
+                        "paid": false,
+                        "jobCost": 0.00,
+                        "extraTasks": [],
+                        "notes": []
+                    },
+                    "shared": {}
                 }
             };
             var request = gapi.client.calendar.events.update({
@@ -188,36 +198,84 @@ $(document).ready(function () {
                 'resource': resource
             });
             request.execute(function (resp) {
-//                console.log('Response to move:');
-//                console.log(resp);
-//                console.log(resp.id);
                 $('#calendar').fullCalendar('refetchEvents');
             });
         },
-        eventClick: function (calEvent, jsEvent, view) {
-
-            alert('Event: ' + calEvent.title);
-            //alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-            //alert('View: ' + view.name);
-            console.log(this.parentNode);
-            console.log(this.parentNode.parentNode);
-            console.log($('#calendar'));
-            alert(this);
-
+//        eventClick: function (calEvent, jsEvent, view) {
             // change the border color just for fun
-            $(this).css('border-color', 'red');
-
-        },
+//            $(this).css('border-color', 'red');
+//        },
         
         eventRender: function(event, element, view) {
-            console.log(event);
+            // Set the display for the various event attributes
+            
+            //console.log(element.html());
+            if(mhcEventIsConfirmed(event)) {
+                element.find("div.fc-time").prepend("✔");
+            }
+            
+            if (mhcEventHasStaff(event)) {
+                element.find("div.fc-title").append("<img src='icons/head-icon.png' height='12' width='12' align='right'/>");
+            }
+            
+            if (mhcEventIsComplete(event)) {
+                element.addClass("fc-event-complete");
+            }
+            //I need to store the original event attributes
+            //in the event that will be rendered, so as to use 
+            //that information in the drop function 
+            $(element).data('id', event.id);
+            $(element).data('start', event.start);
+            $(element).data('end', event.end);
+            $(element).data('title', event.title);
+            $(element).data('location', event.location);
+            $(element).data('extendedProperties', event.extendedProperties);
             element.droppable({
                 accept: ".fc-staff",
             drop: function (event, ui) {
-                console.log(event);
-                alert('Dropped.  Bang!');
+                var furtherExtendedProperties = $(this).data("extendedProperties");
+                if (furtherExtendedProperties == null) {
+                    furtherExtendedProperties = {
+                        "private": {
+                            "staff": []
+                        }
+                    }
+                }
+                var staff = furtherExtendedProperties.private.staff;
+                var droppedStaffName = ui.draggable.text();  
+                
+                if (staff == null) {
+                    staff = [droppedStaffName];
+                } else {
+                    if (!mhcArrayContains(staff, droppedStaffName)) {
+                    staff.push(droppedStaffName);
+                }
+                }
+                
+                var resource = {
+                "summary": $(this).data("title"),
+                "location": $(this).data("location"),
+                "start": {
+                    "dateTime": $(this).data("start"),
+                    "timeZone": "Australia/Melbourne"
+                },
+                "end": {
+                    "dateTime": $(this).data("end"),
+                    "timeZone": "Australia/Melbourne"
+                },
+                "extendedProperties": furtherExtendedProperties
+            };
+                var request = gapi.client.calendar.events.update({
+                'calendarId': 'primary',
+                'eventId': $(this).data("id"),
+                'resource': resource
+            });
+            request.execute(function (resp) {
+                //$('#calendar').fullCalendar('refetchEvents');
+            });
+                
             }
-            })
+            });
         }
 
     });

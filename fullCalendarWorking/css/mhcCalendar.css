@@ -88,3 +88,7 @@ body {
 .fc-more-popover .fc-staff-container {
 	padding: 10px;
 }
+
+.fc-event-complete {
+    border: 2px solid black;
+}
