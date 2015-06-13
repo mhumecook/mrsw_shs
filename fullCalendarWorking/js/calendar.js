@@ -82,7 +82,9 @@ $(document).ready(function () {
         },
         eventClick: function (event) {
              //opens events in a popup window
-            window.open(event.url, 'gcalevent', 'width=700,height=600');
+            //window.open(event.url, 'gcalevent', 'width=700,height=600');
+            $('#calendar').fullCalendar('updateEvent',event);
+            console.log(event);
             return false;
         },
         
@@ -106,9 +108,12 @@ $(document).ready(function () {
             $('#calendar').fullCalendar('unselect');
         },
         eventReceive: function (event) {
+            //console.log(event);
             $('#calendar').fullCalendar('addEvent', event, true);
             /* For the insert function*/
-            var endTime = moment(event.start);
+            
+            /*I create a complex extendedProperties object when the event is 
+             * first created for the calendar*/
             myExtendedProperties = {};
             myExtendedProperties.private = {};
             myExtendedProperties.private.staff = [];
@@ -119,8 +124,12 @@ $(document).ready(function () {
             myExtendedProperties.private.paid = false;
             myExtendedProperties.private.jobCost = 0.00;
             
+            event.title = event.jobName;
             
+            var endTime = moment(event.start);  //"moment" takes a copy of the time
             endTime.add(1, 'hours');
+            
+            //Construct the object that will be fed to Google Calendar
             var resource = {
                 "summary": event.jobName,
                 "location": event.appointmentAddress,
@@ -140,6 +149,15 @@ $(document).ready(function () {
                 'resource': resource
             });
             request.execute(function (resp) {
+//                console.log("Response");
+//                console.log(resp);
+//                console.log("Event");
+//                console.log(event);
+                event.title = event.jobName;
+                event.end = resp.end;
+                event.url = resp.htmlLink;
+                $('#calendar').fullCalendar('updateEvent',event);
+                console.log(event);
             });
             /* End of insert function */
 
@@ -221,6 +239,24 @@ $(document).ready(function () {
             if (mhcEventIsComplete(event)) {
                 element.addClass("fc-event-complete");
             }
+            
+            if (mhcEventIsPaid(event)) {
+                element.find("div.fc-time").append("<img src='icons/dollar-icon.png' height='12' width='12' align='right'/>");
+            }
+            
+            if (mhcEventHasExtraTasks(event)) {
+                element.find("div.fc-time").append("<img src='icons/tasks-icon.png' height='12' width='12' align='right'/>");
+            }
+            
+            if (mhcEventHasIncidents(event)) {
+                element.find("div.fc-time").append("<img src='icons/incidents-icon.png' height='12' width='12' align='right'/>");
+            }
+            
+            if (mhcEventHasNotes(event)) {
+                element.find("div.fc-time").append("<img src='icons/notes-icon.png' height='12' width='12' align='right'/>");
+            }
+            
+            
             //I need to store the original event attributes
             //in the event that will be rendered, so as to use 
             //that information in the drop function 
@@ -251,6 +287,8 @@ $(document).ready(function () {
                     staff.push(droppedStaffName);
                 }
                 }
+                
+                $(this).find("div.fc-title").append("<img src='icons/head-icon.png' height='12' width='12' align='right'/>")
                 
                 var resource = {
                 "summary": $(this).data("title"),

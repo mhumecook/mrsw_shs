@@ -26,3 +26,19 @@ function mhcEventHasStaff(event) {
 function mhcEventIsComplete(event) {
     return true;
 }
+
+function mhcEventIsPaid(event) {
+    return true;
+}
+
+function mhcEventHasExtraTasks(event) {
+    return true;
+}
+
+function mhcEventHasIncidents(event) {
+    return true;
+}
+
+function mhcEventHasNotes(event) {
+    return true;
+}
